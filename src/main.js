@@ -24,3 +24,47 @@ document.querySelector('#inquiry-form').addEventListener('submit', event => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   document.querySelector('#form-status').textContent = 'Your inquiry draft has been downloaded. Nothing has been sent.';
 });
+
+
+// Pause on hover/focus, hidden tabs, and reduced motion; manual controls stay available.
+const carousel = document.querySelector('.hero');
+const slides = [...carousel.querySelectorAll('.hero-image')];
+const tabs = [...carousel.querySelectorAll('[data-slide]')];
+const pauseButton = carousel.querySelector('.hero-pause');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let activeSlide = 0;
+let paused = reducedMotion.matches;
+let timer;
+function showSlide(index) {
+  activeSlide = (index + slides.length) % slides.length;
+  slides.forEach((slide, i) => slide.classList.toggle('is-active', i === activeSlide));
+  tabs.forEach((tab, i) => {
+    tab.classList.toggle('is-active', i === activeSlide);
+    tab.setAttribute('aria-pressed', String(i === activeSlide));
+  });
+}
+function scheduleSlides() {
+  clearInterval(timer);
+  pauseButton.textContent = paused ? 'Play' : 'Pause';
+  pauseButton.setAttribute('aria-label', paused ? 'Play slideshow' : 'Pause slideshow');
+  if (!paused && !document.hidden && !carousel.matches(':hover') && !carousel.contains(document.activeElement)) {
+    timer = setInterval(() => showSlide(activeSlide + 1), 5500);
+  }
+}
+tabs.forEach((tab, i) => tab.addEventListener('click', () => { showSlide(i); scheduleSlides(); }));
+pauseButton.addEventListener('click', () => { paused = !paused; scheduleSlides(); });
+carousel.addEventListener('mouseenter', () => clearInterval(timer));
+carousel.addEventListener('mouseleave', scheduleSlides);
+carousel.addEventListener('focusin', () => clearInterval(timer));
+carousel.addEventListener('focusout', () => setTimeout(scheduleSlides, 0));
+document.addEventListener('visibilitychange', scheduleSlides);
+reducedMotion.addEventListener('change', event => { paused = event.matches; scheduleSlides(); });
+let touchStart;
+carousel.addEventListener('touchstart', event => { touchStart = event.changedTouches[0].clientX; }, { passive: true });
+carousel.addEventListener('touchend', event => {
+  if (touchStart === undefined) return;
+  const distance = event.changedTouches[0].clientX - touchStart;
+  if (Math.abs(distance) > 60) { showSlide(activeSlide + (distance < 0 ? 1 : -1)); scheduleSlides(); }
+  touchStart = undefined;
+}, { passive: true });
+scheduleSlides();

@@ -37,3 +37,11 @@ https://saulchi.github.io/net-sportswear-website/
 Do not configure a custom domain or add a `CNAME` file. This preview is separate from the existing live website. Confirm a successful Pages deployment before treating the URL as live.
 
 To validate the production output locally, run `npm run build`, then `npm run preview -- --port 4173` and open `/net-sportswear-website/` on that server.
+
+## Carousel regression checks
+
+The homepage starts playing on load and advances Ski → Cycling → Outdoor every five seconds. Hover and focus do not stop playback. Pause/Play controls playback explicitly; manual selection and swipes restart the five-second interval while preserving the selected playback state. Background tabs suspend the timer and resume when visible. Reduced-motion preferences disable the visual transition while retaining the requested autoplay.
+
+Run `npx playwright install chromium` once, then `npm run test:carousel`. Tests exercise the production build with Chromium, including autoplay while hovered, Pause/Play while focused, continuous looping, manual selection, mobile swipes and reduced-motion settings. `CHROMIUM_PATH` can select an existing Chromium executable.
+
+The Pages workflow stamps the deployed revision and runs these same browser checks against the public preview URL after deployment. A successful deployment job therefore confirms the new revision is live and its carousel behavior passes.

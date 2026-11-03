@@ -26,14 +26,14 @@ document.querySelector('#inquiry-form').addEventListener('submit', event => {
 });
 
 
-// Pause on hover/focus, hidden tabs, and reduced motion; manual controls stay available.
+// Autoplay is controlled only by Pause/Play and page visibility.
+// Reduced-motion preferences are respected by the CSS transition rules.
 const carousel = document.querySelector('.hero');
 const slides = [...carousel.querySelectorAll('.hero-image')];
 const tabs = [...carousel.querySelectorAll('[data-slide]')];
 const pauseButton = carousel.querySelector('.hero-pause');
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let activeSlide = 0;
-let paused = reducedMotion.matches;
+let paused = false;
 let timer;
 function showSlide(index) {
   activeSlide = (index + slides.length) % slides.length;
@@ -47,18 +47,13 @@ function scheduleSlides() {
   clearInterval(timer);
   pauseButton.textContent = paused ? 'Play' : 'Pause';
   pauseButton.setAttribute('aria-label', paused ? 'Play slideshow' : 'Pause slideshow');
-  if (!paused && !document.hidden && !carousel.matches(':hover') && !carousel.contains(document.activeElement)) {
-    timer = setInterval(() => showSlide(activeSlide + 1), 5500);
+  if (!paused && !document.hidden) {
+    timer = setInterval(() => showSlide(activeSlide + 1), 5000);
   }
 }
 tabs.forEach((tab, i) => tab.addEventListener('click', () => { showSlide(i); scheduleSlides(); }));
 pauseButton.addEventListener('click', () => { paused = !paused; scheduleSlides(); });
-carousel.addEventListener('mouseenter', () => clearInterval(timer));
-carousel.addEventListener('mouseleave', scheduleSlides);
-carousel.addEventListener('focusin', () => clearInterval(timer));
-carousel.addEventListener('focusout', () => setTimeout(scheduleSlides, 0));
 document.addEventListener('visibilitychange', scheduleSlides);
-reducedMotion.addEventListener('change', event => { paused = event.matches; scheduleSlides(); });
 let touchStart;
 carousel.addEventListener('touchstart', event => { touchStart = event.changedTouches[0].clientX; }, { passive: true });
 carousel.addEventListener('touchend', event => {

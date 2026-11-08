@@ -73,6 +73,12 @@ try {
   await page.clock.runFor(5000); assert.equal(await active(), '1');
   assert.deepEqual(errors, []);
   console.log('PASS: 5-second autoplay on load, continuous loop while hovered, Pause/Play while focused, manual selection, mobile swipes, reduced motion and no browser errors.');
+} catch (error) {
+  if (process.env.CI) {
+    const detail = String(error.stack || error).replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A');
+    console.log(`::error title=Browser verification failure::${detail}`);
+  }
+  throw error;
 } finally {
   await browser?.close();
   server?.kill('SIGTERM');

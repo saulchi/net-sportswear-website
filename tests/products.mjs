@@ -89,4 +89,10 @@ try {
   if (!process.env.CI && !process.env.PREVIEW_URL) await page.screenshot({path:'/tmp/net-products-mobile.png',fullPage:true});
   assert.deepEqual(errors,[]);
   console.log('PASS: full-width mega menus, all 24 direct MEN/WOMEN links, desktop hover/click, keyboard and Escape, mobile accordions at 390/320px, no filters, direct-page refresh, inquiry download and fallback.');
+} catch (error) {
+  if (process.env.CI) {
+    const detail = String(error.stack || error).replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A');
+    console.log(`::error title=Browser verification failure::${detail}`);
+  }
+  throw error;
 } finally { await browser?.close();server?.kill('SIGTERM'); }

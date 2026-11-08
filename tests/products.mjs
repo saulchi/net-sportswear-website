@@ -39,6 +39,7 @@ try {
       for (const type of types) {
         await page.locator(`button[aria-controls="mega-${category.toLowerCase()}"]`).hover();
         await page.getByRole('region', {name:`${category} ${gender}`,exact:true}).getByRole('link',{name:type,exact:true}).click();
+        await page.locator('#product-grid[aria-busy="false"]').waitFor();
         assert.equal(await page.locator('h1').innerText(),category);
         assert.equal(await page.locator('#product-heading').innerText(),type);
         assert.equal(await page.locator('.product-card').count(),1);
@@ -76,6 +77,7 @@ try {
     await outdoor.click();assert.equal(await outdoor.getAttribute('aria-expanded'),'true');
     if (!process.env.CI && !process.env.PREVIEW_URL) await page.screenshot({path:'/tmp/net-mega-mobile.png'});
     await page.getByRole('region',{name:'OUTDOOR Women',exact:true}).getByRole('link',{name:'Hardshell Jackets',exact:true}).click();
+    await page.locator('#product-grid[aria-busy="false"]').waitFor();
     assert.equal(await page.locator('#product-heading').innerText(),'Hardshell Jackets');
     assert.equal(await page.locator('.product-card').getAttribute('data-gender'),'Women');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));

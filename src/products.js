@@ -49,6 +49,7 @@ function render() {
   }
   document.querySelector('#product-count').textContent = `${category} · ${count} development ${count === 1 ? 'option' : 'options'} · ${gender === 'All' ? 'Men & Women' : gender}`;
   document.querySelector('#category-inquiry').href = inquiryUrl(type, gender);
+  grid.setAttribute('aria-busy', 'false');
 }
 window.addEventListener('popstate', () => { readFilters(); render(); });
 readFilters();

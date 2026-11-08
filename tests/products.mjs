@@ -40,8 +40,9 @@ try {
         await page.locator(`button[aria-controls="mega-${category.toLowerCase()}"]`).hover();
         await page.getByRole('region', {name:`${category} ${gender}`,exact:true}).getByRole('link',{name:type,exact:true}).click();
         await page.locator('#product-grid[aria-busy="false"]').waitFor();
-        assert.equal(await page.locator('h1').innerText(),category);
-        assert.equal(await page.locator('#product-heading').innerText(),type);
+        await page.locator('.product-visual img').evaluate(image => image.decode());
+        assert((await page.locator('h1').innerText()).includes(category));
+        assert((await page.locator('#product-heading').innerText()).endsWith(type.toUpperCase()));
         assert.equal(await page.locator('.product-card').count(),1);
         assert.equal(await page.locator('.product-card').getAttribute('data-gender'),gender);
         assert.equal(await page.locator('.product-filters, .gender-options, #subcategory, .filter-reset').count(),0);
@@ -49,7 +50,9 @@ try {
         assert.equal(await page.locator('.product-card').count(),1);
       }
     }
-    assert(await page.locator('#category-image').evaluate(i => i.complete && i.naturalWidth > 0));
+    await page.waitForFunction(() => [...document.querySelectorAll('.product-visual img')].every(i => i.complete && i.naturalWidth > 0));
+    assert.equal(await page.locator('.product-hero').count(),0);
+    assert.equal(await page.locator('#product-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length),4);
   }
   // Keyboard disclosures: Enter/Space, ArrowDown, normal Tab, and Escape restores focus.
   const skiTrigger = page.locator('[aria-controls="mega-ski"]');
@@ -60,12 +63,13 @@ try {
   await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement.textContent),'Pants');
   await page.keyboard.press('Escape');assert.equal(await skiTrigger.getAttribute('aria-expanded'),'false');assert(await skiTrigger.evaluate(el=>el===document.activeElement));
   await skiTrigger.press('Space');assert.equal(await skiTrigger.getAttribute('aria-expanded'),'true');
-  await page.locator('#product-heading').click();assert.equal(await skiTrigger.getAttribute('aria-expanded'),'false');
+  await page.locator('.product-development-note h3').click();assert.equal(await skiTrigger.getAttribute('aria-expanded'),'false');
   await skiTrigger.click();assert.equal(await skiTrigger.getAttribute('aria-expanded'),'true');
   await skiTrigger.click();assert.equal(await skiTrigger.getAttribute('aria-expanded'),'false');
   if (!process.env.CI && !process.env.PREVIEW_URL) { await page.mouse.move(0,0);await skiTrigger.hover();assert(await page.locator('#mega-ski').isVisible());await page.screenshot({path:'/tmp/net-mega-desktop.png'}); }
   await page.goto(`${url}products.html?category=OUTDOOR&gender=Women&subcategory=Softshell+Jackets`,{waitUntil:'networkidle'});
-  await page.locator('.product-card a').click();
+  await page.locator('.product-enquire').click();
+  await page.waitForFunction(() => document.querySelector('[name=category]')?.value === 'OUTDOOR');
   assert.equal(await page.locator('[name=category]').inputValue(),'OUTDOOR');
   assert.match(await page.locator('[name=message]').inputValue(),/OUTDOOR \/ Softshell Jackets \/ Women/);
   await page.locator('[name=name]').fill('Alex Morgan');await page.locator('[name=email]').fill('alex@example.com');await page.locator('[name=company]').fill('Example Brand');await page.locator('[type=checkbox]').check();
@@ -78,7 +82,8 @@ try {
     if (!process.env.CI && !process.env.PREVIEW_URL) await page.screenshot({path:'/tmp/net-mega-mobile.png'});
     await page.getByRole('region',{name:'OUTDOOR Women',exact:true}).getByRole('link',{name:'Hardshell Jackets',exact:true}).click();
     await page.locator('#product-grid[aria-busy="false"]').waitFor();
-    assert.equal(await page.locator('#product-heading').innerText(),'Hardshell Jackets');
+    assert.equal(await page.locator('#product-heading').innerText(),"WOMEN'S OUTDOOR HARDSHELL JACKETS");
+    assert.equal(await page.locator('#product-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length),2);
     assert.equal(await page.locator('.product-card').getAttribute('data-gender'),'Women');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     await page.locator('.menu-toggle').click();await page.locator('[aria-controls="mega-ski"]').click();
@@ -87,8 +92,12 @@ try {
     await page.keyboard.press('Escape');assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');
   }
   await page.goto(`${url}products.html?category=unknown&gender=invalid&subcategory=invalid`,{waitUntil:'networkidle'});
-  assert.equal(await page.locator('h1').innerText(),'SKI');assert.equal(await page.locator('.product-card').count(),8);
-  if (!process.env.CI && !process.env.PREVIEW_URL) await page.screenshot({path:'/tmp/net-products-mobile.png',fullPage:true});
+  assert.equal(await page.locator('h1').innerText(),'SKI COLLECTION');assert.equal(await page.locator('.product-card').count(),8);
+  if (!process.env.CI && !process.env.PREVIEW_URL) {
+    await page.screenshot({path:'/tmp/net-products-mobile.png',fullPage:true});
+    await page.setViewportSize({width:1440,height:1000});await page.goto(`${url}products.html?category=OUTDOOR`,{waitUntil:'networkidle'});
+    await page.screenshot({path:'/tmp/net-products-desktop.png',fullPage:true});
+  }
   assert.deepEqual(errors,[]);
   console.log('PASS: full-width mega menus, all 24 direct MEN/WOMEN links, desktop hover/click, keyboard and Escape, mobile accordions at 390/320px, no filters, direct-page refresh, inquiry download and fallback.');
 } catch (error) {

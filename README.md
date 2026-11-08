@@ -53,3 +53,9 @@ Desktop SKI, CYCLING and OUTDOOR disclosures open on hover or click. Each full-w
 `products.html?category=SKI&gender=Men&subcategory=Jackets` is a static GitHub Pages-compatible product destination. Men/Women and product-type filter interfaces have been removed. The same catalog module supplies both the menus and product pages. Inquiry links carry the chosen category, product type and fit into the local inquiry draft.
 
 Run `npm test` for carousel and product-navigation browser checks. Both suites also run against the published Pages revision. Tests cover all 24 menu destinations, hover/click, keyboard, mobile expansion, direct-page reloads, removal of filter controls and inquiry downloads. The original homepage images and five-second carousel are preserved. No prices, carts or checkout are included.
+
+## Image-led collection layout
+
+Product listing pages use a compact title/description and a photo grid: four columns on desktop, three on tablets, two on phones. Each existing development option has a matching subcategory/fit concept image; counts reflect these options, not invented retail stock. Cards link to the project inquiry form. No gender filters, retail sorting, prices or checkout are included.
+
+Studio images in `public/images/products` are AI-generated concept visuals with paired Men/Women panels, cropped for display using CSS. They are not photographs of Net Sportswear inventory. Replace these with approved photography when available. The original homepage image files and carousel code remain unchanged.

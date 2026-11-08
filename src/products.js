@@ -1,4 +1,9 @@
 import { collections } from './catalog.js';
+const photoKeys = {
+  SKI: {Jackets:'ski-jackets',Pants:'ski-pants','One-Piece Suits':'ski-suits',Midlayers:'ski-midlayers'},
+  CYCLING: {'Jackets & Vests':'cycling-jackets','Pants & Shorts':'cycling-bottoms',Jerseys:'cycling-jerseys'},
+  OUTDOOR: {'Hardshell Jackets':'outdoor-hardshell','Softshell Jackets':'outdoor-softshell','Lightweight Jackets':'outdoor-lightweight','Padded Jackets':'outdoor-padded','Pants & Shorts':'outdoor-bottoms'},
+};
 const grid = document.querySelector('#product-grid');
 let category;
 let gender;
@@ -20,10 +25,9 @@ function render() {
   document.title = [category, gender !== 'All' ? gender.toUpperCase() : '', type !== 'All' ? type : '', 'NET Sportswear'].filter(Boolean).join(' | ');
   const context = [category, gender !== 'All' ? gender.toUpperCase() : 'MEN & WOMEN', type !== 'All' ? type : 'All products'].join(' / ');
   document.querySelector('#product-context').textContent = context;
-  document.querySelector('#product-heading').textContent = type !== 'All' ? type : 'Your collection. Made your way.';
-  document.querySelector('#category-title').textContent = category;
-  document.querySelector('#category-description').textContent = collection.description;
-  document.querySelector('#category-image').src = `${import.meta.env.BASE_URL}images/${collection.image}`;
+  const fitTitle = gender === 'All' ? '' : `${gender.toUpperCase()}'S `;
+  document.querySelector('#product-heading').textContent = `${fitTitle}${category}${type === 'All' ? ' COLLECTION' : ` ${type.toUpperCase()}`}`;
+  document.querySelector('#category-description').textContent = type === 'All' ? collection.description : collection.types[type];
   document.querySelectorAll('[data-product-category]').forEach(link => {
     if (link.dataset.productCategory === category) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
@@ -38,16 +42,22 @@ function render() {
       card.className = 'product-card';
       card.dataset.gender = fit;
       card.dataset.subcategory = name;
-      const label = document.createElement('div'); label.className = 'eyebrow'; label.textContent = `${category} / ${fit}`;
-      const number = document.createElement('span'); number.className = 'product-number'; number.textContent = String(++count).padStart(2, '0');
-      const title = document.createElement('h3'); title.textContent = name;
-      const text = document.createElement('p'); text.textContent = description;
-      const note = document.createElement('p'); note.className = 'product-fit'; note.textContent = `${fit} · OEM / ODM development`;
-      const link = document.createElement('a'); link.href = inquiryUrl(name, fit); link.textContent = 'Discuss this style';
-      card.append(label, number, title, text, note, link); grid.append(card);
+      const photo = document.createElement('a'); photo.className = 'product-visual'; photo.href = inquiryUrl(name, fit);
+      photo.setAttribute('aria-label', `Discuss ${fit}'s ${name}`);
+      const image = document.createElement('img');
+      image.src = `${import.meta.env.BASE_URL}images/products/${photoKeys[category][name]}.png`;
+      image.alt = `${fit}'s ${category} ${name} — AI-generated design concept`;
+      image.loading = count < 4 ? 'eager' : 'lazy'; image.decoding = 'async';
+      image.className = fit === 'Women' ? 'pair-right' : 'pair-left';
+      const badge = document.createElement('span');badge.className = 'concept-badge';badge.textContent = 'CONCEPT';photo.append(image,badge);
+      const info = document.createElement('div');info.className = 'product-info';
+      const title = document.createElement('h2');title.textContent = name;
+      const note = document.createElement('p');note.className = 'product-fit';note.textContent = `${fit} / ${category}`;
+      const link = document.createElement('a');link.href = inquiryUrl(name,fit);link.className = 'product-enquire';link.textContent = 'Enquire about this style';
+      info.append(title,note,link);card.append(photo,info);grid.append(card);count++;
     }
   }
-  document.querySelector('#product-count').textContent = `${category} · ${count} development ${count === 1 ? 'option' : 'options'} · ${gender === 'All' ? 'Men & Women' : gender}`;
+  document.querySelector('#product-count').textContent = `[${count} ${count === 1 ? 'concept' : 'concepts'}]`;
   document.querySelector('#category-inquiry').href = inquiryUrl(type, gender);
   grid.setAttribute('aria-busy', 'false');
 }

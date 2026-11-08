@@ -60,8 +60,10 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Verify deployed revision and carousel in browser
+      - name: Verify deployed revision, carousel and product browsing in browser
         env:
           PREVIEW_URL: ${{ steps.deployment.outputs.page_url }}
           EXPECTED_REVISION: ${{ github.sha }}
-        run: node tests/carousel.mjs
+        run: |
+          node tests/carousel.mjs
+          node tests/products.mjs

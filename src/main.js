@@ -10,10 +10,11 @@ nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
   nav.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open navigation');
 }));
 document.querySelectorAll('[data-category]').forEach(link => link.addEventListener('click', () => {
-  document.querySelector('select[name="category"]').value = link.dataset.category;
+  const field = document.querySelector('select[name="category"]');
+  if (field) field.value = link.dataset.category;
 }));
 document.querySelector('#year').textContent = new Date().getFullYear();
-document.querySelector('#inquiry-form').addEventListener('submit', event => {
+document.querySelector('#inquiry-form')?.addEventListener('submit', event => {
   event.preventDefault();
   const form = event.currentTarget;
   if (!form.reportValidity()) return;
@@ -29,6 +30,7 @@ document.querySelector('#inquiry-form').addEventListener('submit', event => {
 // Autoplay is controlled only by Pause/Play and page visibility.
 // Reduced-motion preferences are respected by the CSS transition rules.
 const carousel = document.querySelector('.hero');
+if (carousel) {
 const slides = [...carousel.querySelectorAll('.hero-image')];
 const tabs = [...carousel.querySelectorAll('[data-slide]')];
 const pauseButton = carousel.querySelector('.hero-pause');
@@ -63,3 +65,19 @@ carousel.addEventListener('touchend', event => {
   touchStart = undefined;
 }, { passive: true });
 scheduleSlides();
+
+}
+
+// Category-page inquiries arrive with a useful, editable project brief.
+const inquiryCategory = document.querySelector('select[name="category"]');
+if (inquiryCategory) {
+  const params = new URLSearchParams(location.search);
+  const category = params.get('category');
+  if (['SKI', 'CYCLING', 'OUTDOOR'].includes(category)) {
+    inquiryCategory.value = category;
+    const type = params.get('subcategory');
+    const gender = params.get('gender');
+    const details = [category, type, ['Men', 'Women'].includes(gender) ? gender : null].filter(Boolean).join(' / ');
+    document.querySelector('[name="message"]').value = `I would like to discuss ${details} development for our brand.`;
+  }
+}

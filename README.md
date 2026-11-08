@@ -18,7 +18,7 @@ npm run build
 npm run preview
 ```
 
-The homepage includes cycling, ski, outdoor and golf collections, OEM/ODM services, company positioning, a development process and a responsive inquiry form. Navigation scrolls to each section; selecting a collection prefills the inquiry category.
+The homepage includes SKI, CYCLING and OUTDOOR collections, OEM/ODM services, company positioning, a development process and a responsive inquiry form. Navigation scrolls to each section; selecting a collection prefills the inquiry category.
 
 The inquiry form validates required fields and downloads a text draft locally. It does not send or store personal information on a server. Connect an approved email or CRM backend before production use.
 
@@ -45,3 +45,9 @@ The homepage starts playing on load and advances Ski → Cycling → Outdoor eve
 Run `npx playwright install chromium` once, then `npm run test:carousel`. Tests exercise the production build with Chromium, including autoplay while hovered, Pause/Play while focused, continuous looping, manual selection, mobile swipes and reduced-motion settings. `CHROMIUM_PATH` can select an existing Chromium executable.
 
 The Pages workflow stamps the deployed revision and runs these same browser checks against the public preview URL after deployment. A successful deployment job therefore confirms the new revision is live and its carousel behavior passes.
+
+## Category browsing
+
+The three main categories are SKI, CYCLING and OUTDOOR. `products.html?category=SKI` (or CYCLING / OUTDOOR) is a static, GitHub Pages-compatible category page. Each includes the agreed product types with Men and Women development options. Fit and product-type filters combine, persist in the URL and support reload and browser back/forward. Inquiry links prefill the selected category, product type and fit; inquiries remain local draft downloads.
+
+Run `npm test` for both carousel and product browsing browser checks. GitHub Pages runs both suites against the newly deployed revision. Existing homepage images and carousel timing/controls are preserved. No retail prices or carts are included. Product cards describe OEM/ODM development categories, not stocked products.

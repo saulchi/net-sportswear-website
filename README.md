@@ -46,8 +46,10 @@ Run `npx playwright install chromium` once, then `npm run test:carousel`. Tests 
 
 The Pages workflow stamps the deployed revision and runs these same browser checks against the public preview URL after deployment. A successful deployment job therefore confirms the new revision is live and its carousel behavior passes.
 
-## Category browsing
+## Product navigation
 
-The three main categories are SKI, CYCLING and OUTDOOR. `products.html?category=SKI` (or CYCLING / OUTDOOR) is a static, GitHub Pages-compatible category page. Each includes the agreed product types with Men and Women development options. Fit and product-type filters combine, persist in the URL and support reload and browser back/forward. Inquiry links prefill the selected category, product type and fit; inquiries remain local draft downloads.
+Desktop SKI, CYCLING and OUTDOOR disclosures open on hover or click. Each full-width panel has MEN and WOMEN columns linking directly to the selected product type. Mobile uses expandable category sections. Native buttons and links support Enter/Space, Tab, ArrowDown and Escape, with focus restored to the category trigger on dismissal. Outside clicks and viewport changes close open menus.
 
-Run `npm test` for both carousel and product browsing browser checks. GitHub Pages runs both suites against the newly deployed revision. Existing homepage images and carousel timing/controls are preserved. No retail prices or carts are included. Product cards describe OEM/ODM development categories, not stocked products.
+`products.html?category=SKI&gender=Men&subcategory=Jackets` is a static GitHub Pages-compatible product destination. Men/Women and product-type filter interfaces have been removed. The same catalog module supplies both the menus and product pages. Inquiry links carry the chosen category, product type and fit into the local inquiry draft.
+
+Run `npm test` for carousel and product-navigation browser checks. Both suites also run against the published Pages revision. Tests cover all 24 menu destinations, hover/click, keyboard, mobile expansion, direct-page reloads, removal of filter controls and inquiry downloads. The original homepage images and five-second carousel are preserved. No prices, carts or checkout are included.

@@ -1,35 +1,5 @@
-const collections = {
-  SKI: {
-    image: 'ski.png', description: 'Confidence on the mountain. A collection built around your brand.',
-    types: {
-      'Jackets': 'Develop shell and insulated jacket concepts around your intended conditions.',
-      'Pants': 'Refine movement, layering room and construction for days on the mountain.',
-      'One-Piece Suits': 'Explore coordinated coverage, fit and functional details in one silhouette.',
-      'Midlayers': 'Develop versatile layering pieces with your preferred fabrics and finish.',
-    },
-  },
-  CYCLING: {
-    image: 'cycling.png', description: 'Designed for movement. Developed for the way your customers ride.',
-    types: {
-      'Jackets & Vests': 'Explore adaptable outer layers, packability and riding-position fit.',
-      'Pants & Shorts': 'Develop cycling bottoms around fit, comfort and your construction brief.',
-      'Jerseys': 'Refine fabric selection, pocket layouts and branding for your next collection.',
-    },
-  },
-  OUTDOOR: {
-    image: 'hero.png', description: 'Ready for the elements. Purposeful apparel for the paths ahead.',
-    types: {
-      'Hardshell Jackets': 'Discuss protective shell construction, fabric options and finishing details.',
-      'Softshell Jackets': 'Explore flexible outer layers balancing movement and everyday versatility.',
-      'Lightweight Jackets': 'Develop light, packable layers for changing conditions and active use.',
-      'Padded Jackets': 'Align on insulation options, silhouette and layering requirements.',
-      'Pants & Shorts': 'Build versatile bottoms around mobility, fit and practical details.',
-    },
-  },
-};
+import { collections } from './catalog.js';
 const grid = document.querySelector('#product-grid');
-const typeFilter = document.querySelector('#subcategory');
-const genderButtons = [...document.querySelectorAll('[data-gender]')];
 let category;
 let gender;
 let type;
@@ -47,7 +17,10 @@ function inquiryUrl(subcategory, fit) {
 }
 function render() {
   const collection = collections[category];
-  document.title = `${category} — OEM / ODM Collections | NET Sportswear`;
+  document.title = [category, gender !== 'All' ? gender.toUpperCase() : '', type !== 'All' ? type : '', 'NET Sportswear'].filter(Boolean).join(' | ');
+  const context = [category, gender !== 'All' ? gender.toUpperCase() : 'MEN & WOMEN', type !== 'All' ? type : 'All products'].join(' / ');
+  document.querySelector('#product-context').textContent = context;
+  document.querySelector('#product-heading').textContent = type !== 'All' ? type : 'Your collection. Made your way.';
   document.querySelector('#category-title').textContent = category;
   document.querySelector('#category-description').textContent = collection.description;
   document.querySelector('#category-image').src = `${import.meta.env.BASE_URL}images/${collection.image}`;
@@ -55,9 +28,6 @@ function render() {
     if (link.dataset.productCategory === category) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
   });
-  typeFilter.replaceChildren(new Option('All product types', 'All'), ...Object.keys(collection.types).map(name => new Option(name, name)));
-  typeFilter.value = type;
-  genderButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.gender === gender)));
   grid.replaceChildren();
   let count = 0;
   for (const [name, description] of Object.entries(collection.types)) {
@@ -77,19 +47,9 @@ function render() {
       card.append(label, number, title, text, note, link); grid.append(card);
     }
   }
-  document.querySelector('#product-count').textContent = `${category} · ${count} development options · ${gender === 'All' ? 'Men & Women' : gender}`;
+  document.querySelector('#product-count').textContent = `${category} · ${count} development ${count === 1 ? 'option' : 'options'} · ${gender === 'All' ? 'Men & Women' : gender}`;
   document.querySelector('#category-inquiry').href = inquiryUrl(type, gender);
 }
-function updateFilters() {
-  const params = new URLSearchParams({ category });
-  if (gender !== 'All') params.set('gender', gender);
-  if (type !== 'All') params.set('subcategory', type);
-  history.pushState(null, '', `?${params}`);
-  render();
-}
-genderButtons.forEach(button => button.addEventListener('click', () => { gender = button.dataset.gender; updateFilters(); }));
-typeFilter.addEventListener('change', () => { type = typeFilter.value; updateFilters(); });
-document.querySelector('.filter-reset').addEventListener('click', () => { gender = 'All'; type = 'All'; updateFilters(); });
 window.addEventListener('popstate', () => { readFilters(); render(); });
 readFilters();
 render();

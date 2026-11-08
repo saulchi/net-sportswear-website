@@ -24,48 +24,69 @@ try {
   await page.goto(url, { waitUntil: 'networkidle' });
   assert.deepEqual(await page.locator('.collection h3').allTextContents(), Object.keys(expected));
   assert.deepEqual(await page.locator('.hero-tab span').allTextContents(), Object.keys(expected));
-  assert.deepEqual(await page.locator('#navigation a').allTextContents(), ['SKI', 'CYCLING', 'OUTDOOR', 'OEM / ODM', 'About us']);
+  assert.deepEqual(await page.locator('.mega-trigger').allTextContents(), ['SKI+', 'CYCLING+', 'OUTDOOR+']);
   assert(!/golf|Ski & Snowboard|Road & Mountain Biking|Outdoor & Lifestyle/i.test(await page.locator('body').innerText()));
-  await page.locator('.collection').first().click();assert.equal(new URL(page.url()).searchParams.get('category'), 'SKI');
   for (const [category, types] of Object.entries(expected)) {
-    await page.goto(`${url}products.html?category=${category}`, { waitUntil: 'networkidle' });
-    assert.equal(await page.locator('h1').innerText(), category);
-    assert.deepEqual(await page.locator('#subcategory option').allTextContents(), ['All product types', ...types]);
-    assert.equal(await page.locator('.product-card').count(), types.length * 2);
-    assert(await page.locator('#category-image').evaluate(i => i.complete && i.naturalWidth > 0));
-    for (const gender of ['Men', 'Women']) {
-      await page.locator(`button[data-gender="${gender}"]`).click();
-      assert.equal(await page.locator('.product-card').count(), types.length);
-      assert(await page.locator('.product-card').evaluateAll((cards, gender) => cards.every(c => c.dataset.gender === gender), gender));
+    const trigger = page.getByRole('button', {name: category, exact:true});
+    await trigger.hover();
+    const panel = page.locator(`#mega-${category.toLowerCase()}`);
+    assert.equal(await trigger.getAttribute('aria-expanded'),'true');
+    assert(await panel.isVisible());
+    assert.deepEqual(await panel.locator('h3').allTextContents(),['MEN','WOMEN']);
+    for (const column of await panel.locator('.mega-column').all()) assert.deepEqual(await column.locator('a').allTextContents(),types);
+    const bounds = await panel.boundingBox();assert(bounds.width >= 1438 && bounds.x >= 0);
+    for (const gender of ['Men','Women']) {
       for (const type of types) {
-        await page.locator('#subcategory').selectOption(type);
-        assert.equal(await page.locator('.product-card').count(), 1);
-        assert.equal(await page.locator('.product-card h3').innerText(), type);
+        await page.locator(`button[aria-controls="mega-${category.toLowerCase()}"]`).hover();
+        await page.getByRole('region', {name:`${category} ${gender}`,exact:true}).getByRole('link',{name:type,exact:true}).click();
+        assert.equal(await page.locator('h1').innerText(),category);
+        assert.equal(await page.locator('#product-heading').innerText(),type);
+        assert.equal(await page.locator('.product-card').count(),1);
+        assert.equal(await page.locator('.product-card').getAttribute('data-gender'),gender);
+        assert.equal(await page.locator('.product-filters, .gender-options, #subcategory, .filter-reset').count(),0);
+        await page.reload({waitUntil:'networkidle'});
+        assert.equal(await page.locator('.product-card').count(),1);
       }
-      await page.locator('#subcategory').selectOption('All');
     }
-    await page.reload({waitUntil:'networkidle'});
-    assert.equal(await page.locator('button[data-gender="Women"]').getAttribute('aria-pressed'), 'true', `${category}: ${page.url()}`);
-    await page.locator('.filter-reset').click();assert.equal(await page.locator('.product-card').count(), types.length * 2);
-    await page.goBack();assert.equal(await page.locator('.product-card').count(), types.length);
+    assert(await page.locator('#category-image').evaluate(i => i.complete && i.naturalWidth > 0));
   }
+  // Keyboard disclosures: Enter/Space, ArrowDown, normal Tab, and Escape restores focus.
+  const skiTrigger = page.locator('[aria-controls="mega-ski"]');
+  await page.mouse.move(0,0);await skiTrigger.focus();await skiTrigger.press('Enter');
+  assert.equal(await skiTrigger.getAttribute('aria-expanded'),'true');
+  await skiTrigger.press('ArrowDown');
+  assert.equal(await page.evaluate(()=>document.activeElement.textContent),'Jackets');
+  await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement.textContent),'Pants');
+  await page.keyboard.press('Escape');assert.equal(await skiTrigger.getAttribute('aria-expanded'),'false');assert(await skiTrigger.evaluate(el=>el===document.activeElement));
+  await skiTrigger.press('Space');assert.equal(await skiTrigger.getAttribute('aria-expanded'),'true');
+  await page.locator('#product-heading').click();assert.equal(await skiTrigger.getAttribute('aria-expanded'),'false');
+  await skiTrigger.click();assert.equal(await skiTrigger.getAttribute('aria-expanded'),'true');
+  await skiTrigger.click();assert.equal(await skiTrigger.getAttribute('aria-expanded'),'false');
+  if (!process.env.CI && !process.env.PREVIEW_URL) { await page.mouse.move(0,0);await skiTrigger.hover();assert(await page.locator('#mega-ski').isVisible());await page.screenshot({path:'/tmp/net-mega-desktop.png'}); }
   await page.goto(`${url}products.html?category=OUTDOOR&gender=Women&subcategory=Softshell+Jackets`,{waitUntil:'networkidle'});
   await page.locator('.product-card a').click();
   assert.equal(await page.locator('[name=category]').inputValue(),'OUTDOOR');
   assert.match(await page.locator('[name=message]').inputValue(),/OUTDOOR \/ Softshell Jackets \/ Women/);
   await page.locator('[name=name]').fill('Alex Morgan');await page.locator('[name=email]').fill('alex@example.com');await page.locator('[name=company]').fill('Example Brand');await page.locator('[type=checkbox]').check();
   const download=page.waitForEvent('download');await page.locator('[type=submit]').click();assert.equal((await download).suggestedFilename(),'net-sportswear-inquiry.txt');
-  for (const width of [390, 320]) {
-    await page.setViewportSize({width,height:844});
-    await page.goto(url,{waitUntil:'networkidle'});await page.locator('.menu-toggle').click();await page.locator('#navigation a').nth(1).click();
-    assert.equal(await page.locator('h1').innerText(),'CYCLING');
-    await page.locator('button[data-gender="Men"]').click();await page.locator('#subcategory').selectOption('Jerseys');
-    assert.equal(await page.locator('.product-card').count(),1);
+  for (const width of [390,320]) {
+    await page.setViewportSize({width,height:844});await page.goto(url,{waitUntil:'networkidle'});
+    await page.locator('.menu-toggle').click();
+    const outdoor = page.locator('[aria-controls="mega-outdoor"]');
+    await outdoor.click();assert.equal(await outdoor.getAttribute('aria-expanded'),'true');
+    if (!process.env.CI && !process.env.PREVIEW_URL) await page.screenshot({path:'/tmp/net-mega-mobile.png'});
+    await page.getByRole('region',{name:'OUTDOOR Women',exact:true}).getByRole('link',{name:'Hardshell Jackets',exact:true}).click();
+    assert.equal(await page.locator('#product-heading').innerText(),'Hardshell Jackets');
+    assert.equal(await page.locator('.product-card').getAttribute('data-gender'),'Women');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    await page.locator('.menu-toggle').click();await page.locator('[aria-controls="mega-ski"]').click();
+    assert.equal(await page.locator('[aria-controls="mega-ski"]').getAttribute('aria-expanded'),'true');
+    await page.locator('[aria-controls="mega-ski"]').click();assert.equal(await page.locator('[aria-controls="mega-ski"]').getAttribute('aria-expanded'),'false');
+    await page.keyboard.press('Escape');assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');
   }
   await page.goto(`${url}products.html?category=unknown&gender=invalid&subcategory=invalid`,{waitUntil:'networkidle'});
   assert.equal(await page.locator('h1').innerText(),'SKI');assert.equal(await page.locator('.product-card').count(),8);
   if (!process.env.CI && !process.env.PREVIEW_URL) await page.screenshot({path:'/tmp/net-products-mobile.png',fullPage:true});
   assert.deepEqual(errors,[]);
-  console.log('PASS: exact categories, all 12 subcategories for Men/Women, combined filters, refresh/back/reset, homepage/navigation links, inquiry download, mobile 390/320px, invalid-query fallback.');
+  console.log('PASS: full-width mega menus, all 24 direct MEN/WOMEN links, desktop hover/click, keyboard and Escape, mobile accordions at 390/320px, no filters, direct-page refresh, inquiry download and fallback.');
 } finally { await browser?.close();server?.kill('SIGTERM'); }

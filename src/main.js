@@ -1,14 +1,5 @@
-const toggle = document.querySelector('.menu-toggle');
-const nav = document.querySelector('#navigation');
-toggle.addEventListener('click', () => {
-  const expanded = toggle.getAttribute('aria-expanded') !== 'true';
-  toggle.setAttribute('aria-expanded', String(expanded));
-  toggle.setAttribute('aria-label', expanded ? 'Close navigation' : 'Open navigation');
-  nav.classList.toggle('open', expanded);
-});
-nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
-  nav.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open navigation');
-}));
+import { initNavigation } from './navigation.js';
+initNavigation();
 document.querySelectorAll('[data-category]').forEach(link => link.addEventListener('click', () => {
   const field = document.querySelector('select[name="category"]');
   if (field) field.value = link.dataset.category;

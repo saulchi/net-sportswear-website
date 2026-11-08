@@ -34,7 +34,7 @@ try {
     assert.equal(await page.locator('.product-card').count(), types.length * 2);
     assert(await page.locator('#category-image').evaluate(i => i.complete && i.naturalWidth > 0));
     for (const gender of ['Men', 'Women']) {
-      await page.locator(`[data-gender="${gender}"]`).filter({hasNot:page.locator('h3')}).first().click();
+      await page.locator(`button[data-gender="${gender}"]`).click();
       assert.equal(await page.locator('.product-card').count(), types.length);
       assert(await page.locator('.product-card').evaluateAll((cards, gender) => cards.every(c => c.dataset.gender === gender), gender));
       for (const type of types) {
@@ -45,7 +45,7 @@ try {
       await page.locator('#subcategory').selectOption('All');
     }
     await page.reload({waitUntil:'networkidle'});
-    assert.equal(await page.locator('button[data-gender="Women"]').getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.locator('button[data-gender="Women"]').getAttribute('aria-pressed'), 'true', `${category}: ${page.url()}`);
     await page.locator('.filter-reset').click();assert.equal(await page.locator('.product-card').count(), types.length * 2);
     await page.goBack();assert.equal(await page.locator('.product-card').count(), types.length);
   }

@@ -19,12 +19,27 @@ try {
     assert((await page.locator('h1').innerText()).startsWith(`${gender}'s `));
     await page.locator('#detail-image').evaluate(image=>image.decode());
     assert.equal(await page.locator('#detail-image').getAttribute('class'),gender==='Women'?'pair-right':'pair-left');
-    const back=new URL(await page.locator('#detail-back').getAttribute('href'),base);assert.equal(back.searchParams.get('category'),category);assert.equal(back.searchParams.get('subcategory'),subcategory);
+    assert.equal(await page.locator('.detail-thumb').count(),5);
+    for (let index=1;index<5;index++) {
+      await page.locator('.gallery-next').click();
+      assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),String(index));
+      await page.locator('#detail-image').evaluate(image=>image.decode());
+      assert((await page.locator('#detail-image').getAttribute('src')).includes('/products/gallery/'));
+      assert.equal(await page.locator('#detail-image').evaluate(image=>image.style.getPropertyValue('--gallery-top')),gender==='Women'?'-100%':'0%');
+      assert.equal(await page.locator('.detail-thumb[aria-pressed="true"]').count(),1);
+    }
+    await page.locator('.gallery-next').click();assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'0');
+    await page.locator('.gallery-prev').click();assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'4');
+        const back=new URL(await page.locator('#detail-back').getAttribute('href'),base);assert.equal(back.searchParams.get('category'),category);assert.equal(back.searchParams.get('subcategory'),subcategory);
   }
   const query=new URLSearchParams({category:'OUTDOOR',gender:'Men',subcategory:'Padded Jackets'});
   await page.goto(`${base}products.html?${query}`,{waitUntil:'networkidle'});
   await page.locator('.product-visual').click();await page.locator('#product-detail[aria-busy="false"]').waitFor();
   assert.equal(await page.locator('h1').innerText(),"Men's Padded Jacket");
+  await page.locator('[data-image="2"]').click();assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'2');
+  await page.locator('[data-image="2"]').focus();await page.keyboard.press('ArrowRight');assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'3');
+  await page.keyboard.press('Home');assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'0');
+  await page.keyboard.press('End');assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'4');
   await page.locator('[data-view="close"]').click();assert(await page.locator('#detail-photo').evaluate(el=>el.classList.contains('is-close-up')));
   await page.locator('.detail-zoom').focus();await page.keyboard.press('Enter');assert.equal(await page.locator('.detail-zoom').getAttribute('aria-pressed'),'false');
   await page.locator('[data-colour="Olive"]').click();assert.equal(await page.locator('#selected-colour').innerText(),'Olive');
@@ -41,11 +56,22 @@ try {
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     assert.equal(await page.locator('.detail-layout').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length),1);
     await page.locator('[data-view="close"]').click();assert.equal(await page.locator('[data-view="close"]').getAttribute('aria-pressed'),'true');
-    await page.locator('[data-view="full"]').click();await page.locator('[data-size="Custom range"]').click();
+    await page.locator('[data-view="full"]').click();
+    const swipe=async(dx,dy=0)=>page.locator('#detail-photo').evaluate((photo,[dx,dy])=>{
+      const touch=(x,y)=>new Touch({identifier:1,target:photo,clientX:x,clientY:y});
+      photo.dispatchEvent(new TouchEvent('touchstart',{changedTouches:[touch(150,250)],bubbles:true}));
+      photo.dispatchEvent(new TouchEvent('touchend',{changedTouches:[touch(150+dx,250+dy)],bubbles:true}));
+    },[dx,dy]);
+    await swipe(-100);assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'1');
+    await swipe(0,120);assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'1');
+    await swipe(100);assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'0');
+    await page.locator('.gallery-prev').click();assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'4');
+    await page.locator('.gallery-next').click();assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'0');
+    await page.locator('[data-size="Custom range"]').click();
     assert(new URL(await page.locator('#detail-inquiry').getAttribute('href'),base).searchParams.get('size')==='Custom range');
     if(!process.env.CI&&!process.env.PREVIEW_URL&&width===390)await page.screenshot({path:'/tmp/net-detail-mobile.png',fullPage:true});
   }
   await page.goto(`${base}detail.html?category=invalid&subcategory=invalid&gender=invalid`,{waitUntil:'networkidle'});assert.equal(await page.locator('h1').innerText(),"Men's Hardshell Jacket");
-  assert.deepEqual(errors,[]);console.log('PASS: all 24 product details, listing-to-detail links, image views/zoom, keyboard, colour/size brief, accordions, inquiry prefill, mobile and fallback.');
+  assert.deepEqual(errors,[]);console.log('PASS: all 24 product details, listing-to-detail links, five-image arrows/thumbnails/loop, all gallery assets, mobile swipe, zoom, keyboard, colour/size brief, accordions, inquiry prefill, mobile and fallback.');
 } catch(error) { if(process.env.CI)console.log(`::error title=Detail verification failure::${String(error.stack||error).replaceAll('%','%25').replaceAll('\r','%0D').replaceAll('\n','%0A')}`);throw error; }
 finally{await browser?.close();server?.kill('SIGTERM');}

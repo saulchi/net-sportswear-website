@@ -62,6 +62,12 @@ Studio images in `public/images/products` are AI-generated concept visuals with 
 
 ## Product details
 
-Product images and titles open `detail.html` with the category, subcategory and fit in the query string. All 24 development options have a detail destination with full/close-up image views, optional colour/size brief preferences, native expandable development notes and an inquiry link. Full view and close-up use the same AI concept photo, not fabricated additional camera angles. Colour choices describe a requested direction and do not recolour the reference image. Size choices are development preferences, not stock availability. Both preferences are carried into the editable inquiry draft.
+Product images and titles open `detail.html` with the category, subcategory and fit in the query string. All 24 development options have a detail destination with full/close-up image views, optional colour/size brief preferences, native expandable development notes and an inquiry link. Each detail has the original front image plus four AI-generated concept views. Full view and zoom operate on whichever gallery image is selected. Colour choices describe a requested direction and do not recolour the reference image. Size choices are development preferences, not stock availability. Both preferences are carried into the editable inquiry draft.
 
 Run `npm run test:details` for image controls, all 24 destinations, keyboard, mobile and inquiry-prefill checks. The Pages workflow runs this suite against the deployed revision as well as the existing carousel and navigation checks. No price, cart, checkout or unsupported technical product claims are included.
+
+## Five-image product galleries
+
+All 24 product detail destinations retain their original image and add four AI-generated concept views: rear, three-quarter, front detail and construction detail. The added images are arranged in local 4-column / 2-row contact sheets (Men above Women) under `public/images/products/gallery`, displayed as separate gallery panels with CSS. They visualise possible design details and are not photographs of approved physical samples.
+
+Previous/next arrows wrap through all five images; thumbnails select directly and indicate the active image. Keyboard Left/Right/Home/End and horizontal mobile swipes are supported. Vertical gestures retain normal page scrolling, and the thumbnail strip scrolls horizontally without jumping the page. Selecting another image resets zoom. There is no automatic playback in the detail gallery; the homepage's separate five-second carousel is unchanged.

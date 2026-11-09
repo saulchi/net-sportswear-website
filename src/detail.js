@@ -1,4 +1,5 @@
 import { collections, photoKeys } from './catalog.js';
+import { initProductGallery } from './detail-gallery.js';
 
 const params = new URLSearchParams(location.search);
 const category = Object.hasOwn(collections, params.get('category')) ? params.get('category') : 'OUTDOOR';
@@ -50,5 +51,6 @@ function setView(close) {
 }
 document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => setView(button.dataset.view === 'close')));
 document.querySelector('.detail-zoom').addEventListener('click', () => setView(!closeUp));
+initProductGallery({ image, title, gender, photoKey: photoKeys[category][type], resetZoom: () => setView(false) });
 updateInquiry();
 document.querySelector('#product-detail').setAttribute('aria-busy','false');

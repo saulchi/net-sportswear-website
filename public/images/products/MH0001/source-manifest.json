@@ -1,0 +1,52 @@
+{
+  "archive": "MH0001.rar",
+  "style": "MH0001",
+  "image_count": 9,
+  "files": [
+    {
+      "original": "MH0001/2T0A6627_1_1 (中).jpg",
+      "file": "01.jpg",
+      "sha256": "10e7fff26c720b8e05a77f1ed255452713928f562ce133329a7ffdac168395f6"
+    },
+    {
+      "original": "MH0001/2T0A6634_1_1 (中).jpg",
+      "file": "02.jpg",
+      "sha256": "38b7b13a8081c208bbbc09980966ed8dc3f445f733b1ada0893a691ddc56e79c"
+    },
+    {
+      "original": "MH0001/2T0A6637_1_1 (中).jpg",
+      "file": "03.jpg",
+      "sha256": "3b70284b43c43d73c88a762ee87b0dd12eca1e632061ff4a0029593b839cd95d"
+    },
+    {
+      "original": "MH0001/2T0A6644_1_1 (中).jpg",
+      "file": "04.jpg",
+      "sha256": "57b3fc363b772ffe3f2ff0070ca9d6940b18c4ee65bce927eb601e12f249bc2a"
+    },
+    {
+      "original": "MH0001/2T0A6648_1_1 (中).jpg",
+      "file": "05.jpg",
+      "sha256": "e866f77db63718a73649355754854eb4ad2088cc41bbb80ef48eb914c00a270e"
+    },
+    {
+      "original": "MH0001/2T0A6651_1_1 (中).jpg",
+      "file": "06.jpg",
+      "sha256": "1ab553ac7517683885632e47336bd69adde4f45367083983bd3fefef6e9a003f"
+    },
+    {
+      "original": "MH0001/2T0A6657_1_1 (中).jpg",
+      "file": "07.jpg",
+      "sha256": "dfdf78f1f8ad7ae6f78e1c53ac7cc19fffdca8765e7f37b3f3db322bd35a4779"
+    },
+    {
+      "original": "MH0001/2T0A7361_1_1 (中).jpg",
+      "file": "08.jpg",
+      "sha256": "1283d13560c844dcfe7c46dc22606d86ac4dfacc81b329cc36c4ed4e7ec0a9dd"
+    },
+    {
+      "original": "MH0001/front (中).jpg",
+      "file": "09.jpg",
+      "sha256": "ba37512ac59e816164f19d4af92e72d545fb72d8d36f80719e509b61a2e88d06"
+    }
+  ]
+}

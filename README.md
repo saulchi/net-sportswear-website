@@ -71,3 +71,11 @@ Run `npm run test:details` for image controls, all 24 destinations, keyboard, mo
 All 24 product detail destinations retain their original image and add four AI-generated concept views: rear, three-quarter, front detail and construction detail. The added images are arranged in local 4-column / 2-row contact sheets (Men above Women) under `public/images/products/gallery`, displayed as separate gallery panels with CSS. They visualise possible design details and are not photographs of approved physical samples.
 
 Previous/next arrows wrap through all five images; thumbnails select directly and indicate the active image. Keyboard Left/Right/Home/End and horizontal mobile swipes are supported. Vertical gestures retain normal page scrolling, and the thumbnail strip scrolls horizontally without jumping the page. Selecting another image resets zoom. There is no automatic playback in the detail gallery; the homepage's separate five-second carousel is unchanged.
+
+## Uploaded product MH0001
+
+MH0001 is one OUTDOOR → MEN → Hardshell Jackets style with nine supplied photographs. Its record is in `src/inventory.js` and its dedicated destination is `detail.html?product=MH0001`. It replaces the Men's Hardshell concept card in relevant listings rather than adding nine cards. Other concepts and the existing navigation remain available.
+
+All nine JPEG files are copied byte-for-byte from `MH0001.rar`, including the two supplied hem-detail images. `public/images/products/MH0001/source-manifest.json` records the original filenames and SHA-256 checksums. Individual photographs use `object-fit: contain` to preserve portrait and landscape framing. They are labelled as supplied product photos, not AI concepts; materials and performance specifications have not been invented. Product inquiries include the style number.
+
+Run `npm run test:mh0001` for listing classification, one-product/nine-images, original-file integrity, gallery controls, mobile layout/swipe and style-specific inquiry download checks. This suite also runs against the deployed preview.

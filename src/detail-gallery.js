@@ -1,12 +1,17 @@
-export function initProductGallery({ image, title, gender, photoKey, resetZoom }) {
+export function initProductGallery({ image, title, gender, photoKey, resetZoom, photos }) {
   const gallery = document.querySelector('.detail-gallery');
   const strip = gallery.querySelector('.detail-thumbnails');
-  const labels = ['Front view', 'Back view', 'Three-quarter view', 'Front detail', 'Construction detail'];
+  const labels = photos ? photos.map(photo => photo.label) : ['Front view', 'Back view', 'Three-quarter view', 'Front detail', 'Construction detail'];
   const original = `${import.meta.env.BASE_URL}images/products/${photoKey}.png`;
   const additional = `${import.meta.env.BASE_URL}images/products/gallery/${photoKey}.png`;
   const row = gender === 'Women' ? 1 : 0;
   let active = 0;
   function frame(target, index) {
+    if (photos) {
+      target.className = 'single-photo';target.removeAttribute('style');
+      target.src = `${import.meta.env.BASE_URL}${photos[index].src}`;
+      return;
+    }
     target.className = index === 0 ? (row ? 'pair-right' : 'pair-left') : 'gallery-sheet';
     target.removeAttribute('style');
     if (index > 0) {
@@ -32,7 +37,7 @@ export function initProductGallery({ image, title, gender, photoKey, resetZoom }
   function select(index, interactive = true) {
     active = (index + labels.length) % labels.length;
     resetZoom();frame(image,active);
-    image.alt = `${title} — ${labels[active]}, AI design concept`;
+    image.alt = `${title} — ${labels[active]}, ${photos ? 'product photograph' : 'AI design concept'}`;
     gallery.dataset.activeImage = String(active);
     thumbnails.forEach((button,i) => button.setAttribute('aria-pressed',String(i === active)));
     gallery.querySelector('.gallery-status').textContent = `${active + 1} / ${labels.length} · ${labels[active]}`;

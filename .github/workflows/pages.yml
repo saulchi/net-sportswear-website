@@ -68,3 +68,4 @@ jobs:
           node tests/carousel.mjs
           node tests/products.mjs
           node tests/details.mjs
+          node tests/mh0001.mjs

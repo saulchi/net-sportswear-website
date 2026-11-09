@@ -1,3 +1,4 @@
+import { uploadedProducts } from './inventory.js';
 import { initNavigation } from './navigation.js';
 initNavigation();
 document.querySelectorAll('[data-category]').forEach(link => link.addEventListener('click', () => {
@@ -63,12 +64,13 @@ scheduleSlides();
 const inquiryCategory = document.querySelector('select[name="category"]');
 if (inquiryCategory) {
   const params = new URLSearchParams(location.search);
-  const category = params.get('category');
+  const product = uploadedProducts.find(item => item.style === params.get('product'));
+  const category = product?.category ?? params.get('category');
   if (['SKI', 'CYCLING', 'OUTDOOR'].includes(category)) {
     inquiryCategory.value = category;
-    const type = params.get('subcategory');
-    const gender = params.get('gender');
-    const details = [category, type, ['Men', 'Women'].includes(gender) ? gender : null].filter(Boolean).join(' / ');
+    const type = product?.subcategory ?? params.get('subcategory');
+    const gender = product?.gender ?? params.get('gender');
+    const details = [product?.style, category, type, ['Men', 'Women'].includes(gender) ? gender : null].filter(Boolean).join(' / ');
     const preferences = [];
     if (['Charcoal', 'Olive', 'Custom'].includes(params.get('colour'))) preferences.push(`Colour direction: ${params.get('colour')}`);
     if (['XS', 'S', 'M', 'L', 'XL', 'Custom range'].includes(params.get('size'))) preferences.push(`Development size: ${params.get('size')}`);

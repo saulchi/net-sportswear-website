@@ -27,3 +27,9 @@ export const collections = {
     },
   },
 };
+
+export const photoKeys = {
+  SKI: {Jackets:'ski-jackets',Pants:'ski-pants','One-Piece Suits':'ski-suits',Midlayers:'ski-midlayers'},
+  CYCLING: {'Jackets & Vests':'cycling-jackets','Pants & Shorts':'cycling-bottoms',Jerseys:'cycling-jerseys'},
+  OUTDOOR: {'Hardshell Jackets':'outdoor-hardshell','Softshell Jackets':'outdoor-softshell','Lightweight Jackets':'outdoor-lightweight','Padded Jackets':'outdoor-padded','Pants & Shorts':'outdoor-bottoms'},
+};

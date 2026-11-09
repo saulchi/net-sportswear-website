@@ -1,9 +1,4 @@
-import { collections } from './catalog.js';
-const photoKeys = {
-  SKI: {Jackets:'ski-jackets',Pants:'ski-pants','One-Piece Suits':'ski-suits',Midlayers:'ski-midlayers'},
-  CYCLING: {'Jackets & Vests':'cycling-jackets','Pants & Shorts':'cycling-bottoms',Jerseys:'cycling-jerseys'},
-  OUTDOOR: {'Hardshell Jackets':'outdoor-hardshell','Softshell Jackets':'outdoor-softshell','Lightweight Jackets':'outdoor-lightweight','Padded Jackets':'outdoor-padded','Pants & Shorts':'outdoor-bottoms'},
-};
+import { collections, photoKeys } from './catalog.js';
 const grid = document.querySelector('#product-grid');
 let category;
 let gender;
@@ -42,8 +37,8 @@ function render() {
       card.className = 'product-card';
       card.dataset.gender = fit;
       card.dataset.subcategory = name;
-      const photo = document.createElement('a'); photo.className = 'product-visual'; photo.href = inquiryUrl(name, fit);
-      photo.setAttribute('aria-label', `Discuss ${fit}'s ${name}`);
+      const photo = document.createElement('a'); photo.className = 'product-visual'; photo.href = `${import.meta.env.BASE_URL}detail.html?${new URLSearchParams({category,gender:fit,subcategory:name})}`;
+      photo.setAttribute('aria-label', `View ${fit}'s ${name}`);
       const image = document.createElement('img');
       image.src = `${import.meta.env.BASE_URL}images/products/${photoKeys[category][name]}.png`;
       image.alt = `${fit}'s ${category} ${name} — AI-generated design concept`;
@@ -51,7 +46,7 @@ function render() {
       image.className = fit === 'Women' ? 'pair-right' : 'pair-left';
       const badge = document.createElement('span');badge.className = 'concept-badge';badge.textContent = 'CONCEPT';photo.append(image,badge);
       const info = document.createElement('div');info.className = 'product-info';
-      const title = document.createElement('h2');title.textContent = name;
+      const title = document.createElement('h2');const titleLink = document.createElement('a');titleLink.href = photo.href;titleLink.textContent = name;title.append(titleLink);
       const note = document.createElement('p');note.className = 'product-fit';note.textContent = `${fit} / ${category}`;
       const link = document.createElement('a');link.href = inquiryUrl(name,fit);link.className = 'product-enquire';link.textContent = 'Enquire about this style';
       info.append(title,note,link);card.append(photo,info);grid.append(card);count++;

@@ -67,3 +67,4 @@ jobs:
         run: |
           node tests/carousel.mjs
           node tests/products.mjs
+          node tests/details.mjs

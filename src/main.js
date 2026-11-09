@@ -69,6 +69,9 @@ if (inquiryCategory) {
     const type = params.get('subcategory');
     const gender = params.get('gender');
     const details = [category, type, ['Men', 'Women'].includes(gender) ? gender : null].filter(Boolean).join(' / ');
-    document.querySelector('[name="message"]').value = `I would like to discuss ${details} development for our brand.`;
+    const preferences = [];
+    if (['Charcoal', 'Olive', 'Custom'].includes(params.get('colour'))) preferences.push(`Colour direction: ${params.get('colour')}`);
+    if (['XS', 'S', 'M', 'L', 'XL', 'Custom range'].includes(params.get('size'))) preferences.push(`Development size: ${params.get('size')}`);
+    document.querySelector('[name="message"]').value = `I would like to discuss ${details} development for our brand.${preferences.length ? `\n${preferences.join('\n')}` : ''}`;
   }
 }

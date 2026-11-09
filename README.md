@@ -59,3 +59,9 @@ Run `npm test` for carousel and product-navigation browser checks. Both suites a
 Product listing pages use a compact title/description and a photo grid: four columns on desktop, three on tablets, two on phones. Each existing development option has a matching subcategory/fit concept image; counts reflect these options, not invented retail stock. Cards link to the project inquiry form. No gender filters, retail sorting, prices or checkout are included.
 
 Studio images in `public/images/products` are AI-generated concept visuals with paired Men/Women panels, cropped for display using CSS. They are not photographs of Net Sportswear inventory. Replace these with approved photography when available. The original homepage image files and carousel code remain unchanged.
+
+## Product details
+
+Product images and titles open `detail.html` with the category, subcategory and fit in the query string. All 24 development options have a detail destination with full/close-up image views, optional colour/size brief preferences, native expandable development notes and an inquiry link. Full view and close-up use the same AI concept photo, not fabricated additional camera angles. Colour choices describe a requested direction and do not recolour the reference image. Size choices are development preferences, not stock availability. Both preferences are carried into the editable inquiry draft.
+
+Run `npm run test:details` for image controls, all 24 destinations, keyboard, mobile and inquiry-prefill checks. The Pages workflow runs this suite against the deployed revision as well as the existing carousel and navigation checks. No price, cart, checkout or unsupported technical product claims are included.

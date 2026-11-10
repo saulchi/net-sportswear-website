@@ -53,7 +53,13 @@ function render() {
       image.className = product ? 'single-photo' : (fit === 'Women' ? 'pair-right' : 'pair-left');
       const badge = document.createElement('span');badge.className = 'concept-badge';badge.textContent = product?.style ?? 'CONCEPT';photo.append(image,badge);
       const info = document.createElement('div');info.className = 'product-info';
-      const title = document.createElement('h2');const titleLink = document.createElement('a');titleLink.href = photo.href;titleLink.textContent = product?.title ?? name;title.append(titleLink);
+      const title = document.createElement('h2');const titleLink = document.createElement('a');titleLink.href = photo.href;
+      if (product) {
+        const style = document.createElement('span');style.className = 'product-style';style.textContent = product.style;
+        const description = document.createElement('span');description.className = 'product-description';description.textContent = product.title.startsWith(product.style) ? product.title.slice(product.style.length).trim() : product.title;
+        titleLink.append(style,document.createTextNode(' '),description);
+      } else titleLink.textContent = name;
+      title.append(titleLink);
       const note = document.createElement('p');note.className = 'product-fit';note.textContent = `${fit} / ${category}`;
       const link = document.createElement('a');link.href = inquiryUrl(name,fit,product);link.className = 'product-enquire';link.textContent = 'Enquire about this style';
       info.append(title,note,link);card.append(photo,info);grid.append(card);count++;

@@ -31,7 +31,7 @@ try {
   const sources=new Set();
   for(let i=0;i<9;i++) {
     await page.locator(`[data-image="${i}"]`).click();await page.locator('#detail-image').evaluate(image=>image.decode());
-    const src=await page.locator('#detail-image').getAttribute('src');sources.add(src);assert(src.endsWith(`/MH0001/${String(i+1).padStart(2,'0')}.jpg`));
+    const src=await page.locator('#detail-image').getAttribute('src');sources.add(src);assert(src.endsWith(i === 0 ? '/MH0001/01-display.png' : `/MH0001/${String(i+1).padStart(2,'0')}.jpg`));
     assert.equal(await page.locator('#detail-image').evaluate(image=>getComputedStyle(image).objectFit),'contain');
     assert.equal(await page.locator('.detail-thumb[aria-pressed="true"]').count(),1);
     assert.match(await page.locator('.gallery-status').innerText(),new RegExp(`${i+1} / 9`));
@@ -41,6 +41,13 @@ try {
   await page.locator('.gallery-prev').click();assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'8');
   await page.locator('.gallery-next').focus();await page.keyboard.press('Home');assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'0');
   await page.keyboard.press('End');assert.equal(await page.locator('.detail-gallery').getAttribute('data-active-image'),'8');
+  await page.locator('[data-image="0"]').click();await page.locator('#detail-image').evaluate(image=>image.decode());
+  const alpha = await page.locator('#detail-image').evaluate(image=>{
+    const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+    const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);
+    return [[0,0],[canvas.width-1,0],[0,canvas.height-1],[canvas.width-1,canvas.height-1]].map(([x,y])=>ctx.getImageData(x,y,1,1).data[3]);
+  });assert.deepEqual(alpha,[0,0,0,0]);
+  await page.locator('[data-image="8"]').click();
   await page.locator('.detail-zoom').click();assert.equal(await page.locator('.detail-zoom').getAttribute('aria-pressed'),'true');
   await page.locator('.gallery-next').click();assert.equal(await page.locator('.detail-zoom').getAttribute('aria-pressed'),'false');
   if(!process.env.CI&&!process.env.PREVIEW_URL)await page.screenshot({path:'/tmp/net-mh0001-desktop.png',fullPage:true});

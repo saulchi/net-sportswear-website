@@ -85,3 +85,7 @@ Run `npm run test:mh0001` for listing classification, one-product/nine-images, o
 MH0002 is a separate OUTDOOR → MEN → Hardshell Jackets style at `detail.html?product=MH0002`. All five original JPEGs from `MH0002.rar` are preserved unchanged in one product gallery, with source filenames, dimensions and SHA-256 checksums in its source manifest. The grey front image is the cover. MH0001 remains a separate style with its original nine images. The Men's Hardshell listing now contains two product cards, not fourteen image cards.
 
 Run `npm run test:mh0002` for the five-photo gallery, byte integrity, classification, coexistence with MH0001, mobile/keyboard/swipe/zoom and style-specific inquiry checks. All import suites run in the Pages deployment workflow.
+
+## Clean product covers
+
+MH0001 and MH0002 use separate transparent PNG display covers, with the photographed backdrop, side artifacts and background fringe removed. `displaySrc` selects these covers consistently in listings, detail main images and thumbnails. All original JPEGs and their source-manifest checksums remain unchanged; gallery counts stay nine and five. Hover darkening is disabled for supplied photos to avoid introducing edge bands against the uniform product background.

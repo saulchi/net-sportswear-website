@@ -47,7 +47,7 @@ function render() {
       if (product) photo.href = `${import.meta.env.BASE_URL}detail.html?product=${encodeURIComponent(product.style)}`;
       photo.setAttribute('aria-label',product ? `View ${product.title}` : `View ${fit}'s ${name}`);
       const image = document.createElement('img');
-      image.src = product ? `${import.meta.env.BASE_URL}${product.photos[0].src}` : `${import.meta.env.BASE_URL}images/products/${photoKeys[category][name]}.png`;
+      image.src = product ? `${import.meta.env.BASE_URL}${product.photos[0].displaySrc ?? product.photos[0].src}` : `${import.meta.env.BASE_URL}images/products/${photoKeys[category][name]}.png`;
       image.alt = product ? `${product.style} — ${product.photos[0].label}` : `${fit}'s ${category} ${name} — AI-generated design concept`;
       image.loading = count < 4 ? 'eager' : 'lazy'; image.decoding = 'async';
       image.className = product ? 'single-photo' : (fit === 'Women' ? 'pair-right' : 'pair-left');

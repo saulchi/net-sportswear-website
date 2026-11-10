@@ -9,7 +9,7 @@ export function initProductGallery({ image, title, gender, photoKey, resetZoom, 
   function frame(target, index) {
     if (photos) {
       target.className = 'single-photo';target.removeAttribute('style');
-      target.src = `${import.meta.env.BASE_URL}${photos[index].src}`;
+      target.src = `${import.meta.env.BASE_URL}${photos[index].displaySrc ?? photos[index].src}`;
       return;
     }
     target.className = index === 0 ? (row ? 'pair-right' : 'pair-left') : 'gallery-sheet';

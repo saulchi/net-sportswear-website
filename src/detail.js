@@ -25,7 +25,7 @@ document.querySelector('#detail-crumb').textContent = title;
 for (const id of ['#detail-back','#detail-browse']) document.querySelector(id).href = collectionUrl;
 document.querySelector('#detail-back').textContent = `${category} / ${gender.toUpperCase()}`;
 const image = document.querySelector('#detail-image');
-image.src = product ? `${import.meta.env.BASE_URL}${product.photos[0].src}` : `${import.meta.env.BASE_URL}images/products/${photoKeys[category][type]}.png`;
+image.src = product ? `${import.meta.env.BASE_URL}${product.photos[0].displaySrc ?? product.photos[0].src}` : `${import.meta.env.BASE_URL}images/products/${photoKeys[category][type]}.png`;
 image.alt = `${title} — AI-generated design concept`;
 image.className = gender === 'Women' ? 'pair-right' : 'pair-left';
 function updateInquiry() {
@@ -58,7 +58,7 @@ initProductGallery({ image, title, gender, photoKey: photoKeys[category][type], 
 if (product) {
   document.querySelector('.detail-photo .concept-badge').textContent = product.style;
   document.querySelector('#detail-overview').nextElementSibling.textContent = 'Use this style as a starting point for your project. Fit, trims and branding can be developed around your technical brief.';
-  document.querySelector('.detail-image-note').textContent = `Product photographs supplied for ${product.style}. All ${product.photos.length} images belong to this one style; zoom crops the selected photo.`;
+  document.querySelector('.detail-image-note').textContent = `Product photographs supplied for ${product.style}. All ${product.photos.length} images belong to this one style. The cover background is cleaned for display; original uploads are retained. Zoom crops the selected photo.`;
 }
 updateInquiry();
 document.querySelector('#product-detail').setAttribute('aria-busy','false');

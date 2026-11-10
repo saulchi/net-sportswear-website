@@ -16,7 +16,7 @@ export const uploadedProducts = [{
     ['07.jpg','Grey — back'],
     ['08.jpg','Interior view'],
     ['09.jpg','Additional hem detail'],
-  ].map(([file,label]) => ({src:`images/products/MH0001/${file}`,label})),
+  ].map(([file,label]) => ({src:`images/products/MH0001/${file}`,label,displaySrc:file === '01.jpg' ? 'images/products/MH0001/01-display.png' : undefined})),
 }, {
   style: 'MH0002',
   category: 'OUTDOOR',
@@ -30,5 +30,5 @@ export const uploadedProducts = [{
     ['03.jpg','Black — front'],
     ['04.jpg','Black — back'],
     ['05.jpg','Interior view'],
-  ].map(([file,label]) => ({src:`images/products/MH0002/${file}`,label})),
+  ].map(([file,label]) => ({src:`images/products/MH0002/${file}`,label,displaySrc:file === '01.jpg' ? 'images/products/MH0002/01-display.png' : undefined})),
 }];

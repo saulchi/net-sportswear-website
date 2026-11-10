@@ -20,7 +20,7 @@ document.querySelector('#detail-title').textContent = title;
 document.querySelector('#detail-category').textContent = `${category} / OEM & ODM`;
 document.querySelector('#detail-reference').textContent = product ? `Style number / ${product.style}` : `Concept reference / NET-${photoKeys[category][type].toUpperCase()}-${gender === 'Men' ? 'M' : 'W'}`;
 document.querySelector('#detail-description').textContent = product?.description ?? collections[category].types[type];
-document.querySelector('#detail-overview').textContent = product ? `${product.style} is one product style. These nine supplied photographs show its colourways, front and back views, interior and details. Final specifications are confirmed separately.` : `${title} — a ${category} development direction for your next collection.`;
+document.querySelector('#detail-overview').textContent = product ? `${product.style} is one product style. These ${product.photos.length} supplied photographs show its colourways, front and back views, interior and details. Final specifications are confirmed separately.` : `${title} — a ${category} development direction for your next collection.`;
 document.querySelector('#detail-crumb').textContent = title;
 for (const id of ['#detail-back','#detail-browse']) document.querySelector(id).href = collectionUrl;
 document.querySelector('#detail-back').textContent = `${category} / ${gender.toUpperCase()}`;
@@ -58,7 +58,7 @@ initProductGallery({ image, title, gender, photoKey: photoKeys[category][type], 
 if (product) {
   document.querySelector('.detail-photo .concept-badge').textContent = product.style;
   document.querySelector('#detail-overview').nextElementSibling.textContent = 'Use this style as a starting point for your project. Fit, trims and branding can be developed around your technical brief.';
-  document.querySelector('.detail-image-note').textContent = 'Product photographs supplied for MH0001. All nine images belong to this one style; zoom crops the selected photo.';
+  document.querySelector('.detail-image-note').textContent = `Product photographs supplied for ${product.style}. All ${product.photos.length} images belong to this one style; zoom crops the selected photo.`;
 }
 updateInquiry();
 document.querySelector('#product-detail').setAttribute('aria-busy','false');

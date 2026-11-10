@@ -17,4 +17,18 @@ export const uploadedProducts = [{
     ['08.jpg','Interior view'],
     ['09.jpg','Additional hem detail'],
   ].map(([file,label]) => ({src:`images/products/MH0001/${file}`,label})),
+}, {
+  style: 'MH0002',
+  category: 'OUTDOOR',
+  gender: 'Men',
+  subcategory: 'Hardshell Jackets',
+  title: "MH0002 Men's Hooded Jacket",
+  description: 'A men’s hooded outdoor jacket, shown in grey and black with front, back, hood detail and interior photographs. Discuss your material, sizing and OEM / ODM requirements with us.',
+  photos: [
+    ['01.jpg','Grey — front'],
+    ['02.jpg','Hood adjustment detail'],
+    ['03.jpg','Black — front'],
+    ['04.jpg','Black — back'],
+    ['05.jpg','Interior view'],
+  ].map(([file,label]) => ({src:`images/products/MH0002/${file}`,label})),
 }];

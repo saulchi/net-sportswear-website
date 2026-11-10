@@ -79,3 +79,9 @@ MH0001 is one OUTDOOR → MEN → Hardshell Jackets style with nine supplied pho
 All nine JPEG files are copied byte-for-byte from `MH0001.rar`, including the two supplied hem-detail images. `public/images/products/MH0001/source-manifest.json` records the original filenames and SHA-256 checksums. Individual photographs use `object-fit: contain` to preserve portrait and landscape framing. They are labelled as supplied product photos, not AI concepts; materials and performance specifications have not been invented. Product inquiries include the style number.
 
 Run `npm run test:mh0001` for listing classification, one-product/nine-images, original-file integrity, gallery controls, mobile layout/swipe and style-specific inquiry download checks. This suite also runs against the deployed preview.
+
+## Uploaded product MH0002
+
+MH0002 is a separate OUTDOOR → MEN → Hardshell Jackets style at `detail.html?product=MH0002`. All five original JPEGs from `MH0002.rar` are preserved unchanged in one product gallery, with source filenames, dimensions and SHA-256 checksums in its source manifest. The grey front image is the cover. MH0001 remains a separate style with its original nine images. The Men's Hardshell listing now contains two product cards, not fourteen image cards.
+
+Run `npm run test:mh0002` for the five-photo gallery, byte integrity, classification, coexistence with MH0001, mobile/keyboard/swipe/zoom and style-specific inquiry checks. All import suites run in the Pages deployment workflow.

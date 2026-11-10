@@ -69,3 +69,4 @@ jobs:
           node tests/products.mjs
           node tests/details.mjs
           node tests/mh0001.mjs
+          node tests/mh0002.mjs

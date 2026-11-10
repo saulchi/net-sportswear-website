@@ -40,14 +40,15 @@ try {
         await page.locator(`button[aria-controls="mega-${category.toLowerCase()}"]`).hover();
         await page.getByRole('region', {name:`${category} ${gender}`,exact:true}).getByRole('link',{name:type,exact:true}).click();
         await page.locator('#product-grid[aria-busy="false"]').waitFor();
-        await page.locator('.product-visual img').evaluate(image => image.decode());
+        await page.locator('.product-visual img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
         assert((await page.locator('h1').innerText()).includes(category));
         assert((await page.locator('#product-heading').innerText()).endsWith(type.toUpperCase()));
-        assert.equal(await page.locator('.product-card').count(),1);
-        assert.equal(await page.locator('.product-card').getAttribute('data-gender'),gender);
+        const expectedCount = category === 'OUTDOOR' && gender === 'Men' && type === 'Hardshell Jackets' ? 2 : 1;
+        assert.equal(await page.locator('.product-card').count(),expectedCount);
+        assert(await page.locator('.product-card').evaluateAll((cards,gender) => cards.every(card => card.dataset.gender === gender),gender));
         assert.equal(await page.locator('.product-filters, .gender-options, #subcategory, .filter-reset').count(),0);
         await page.reload({waitUntil:'networkidle'});
-        assert.equal(await page.locator('.product-card').count(),1);
+        assert.equal(await page.locator('.product-card').count(),expectedCount);
       }
     }
     await page.waitForFunction(() => [...document.querySelectorAll('.product-visual img')].every(i => i.complete && i.naturalWidth > 0));

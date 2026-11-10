@@ -20,8 +20,9 @@ try {
     assert.equal(await page.locator('[data-product="MH0001"] .concept-badge').innerText(),'MH0001');
     assert(!(await page.locator('[data-product="MH0001"] img').getAttribute('alt')).includes('AI'));
   }
-  assert.match(await page.locator('#product-count').innerText(),/1 product/);
-  assert.equal(await page.locator('.product-card').count(),1);
+  assert.match(await page.locator('#product-count').innerText(),/2 products/);
+  assert.equal(await page.locator('.product-card').count(),2);
+  assert.equal(await page.locator('[data-product="MH0002"]').count(),1);
   await page.locator('[data-product="MH0001"] .product-visual').click();await page.locator('#product-detail[aria-busy="false"]').waitFor();
   assert(new URL(page.url()).searchParams.get('product')==='MH0001');
   assert.match(await page.locator('h1').innerText(),/MH0001 Men's/);assert.match(await page.locator('#detail-reference').innerText(),/Style number \/ MH0001/);

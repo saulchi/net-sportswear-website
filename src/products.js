@@ -39,7 +39,7 @@ function render() {
       const records = uploadedProducts.filter(item => item.category === category && item.gender === fit && item.subcategory === name);
       for (const product of records.length ? records : [null]) {
       const card = document.createElement('article');
-      if (product) {card.dataset.product = product.style;productCount++;}
+      if (product) {card.dataset.product = product.legacyStyle ?? product.style;productCount++;}
       card.className = 'product-card';
       card.dataset.gender = fit;
       card.dataset.subcategory = name;

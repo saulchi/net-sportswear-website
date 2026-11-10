@@ -1,4 +1,4 @@
-import { uploadedProducts } from './inventory.js';
+import { findUploadedProduct } from './inventory.js';
 import { initNavigation } from './navigation.js';
 initNavigation();
 document.querySelectorAll('[data-category]').forEach(link => link.addEventListener('click', () => {
@@ -64,7 +64,7 @@ scheduleSlides();
 const inquiryCategory = document.querySelector('select[name="category"]');
 if (inquiryCategory) {
   const params = new URLSearchParams(location.search);
-  const product = uploadedProducts.find(item => item.style === params.get('product'));
+  const product = findUploadedProduct(params.get('product'));
   const category = product?.category ?? params.get('category');
   if (['SKI', 'CYCLING', 'OUTDOOR'].includes(category)) {
     inquiryCategory.value = category;

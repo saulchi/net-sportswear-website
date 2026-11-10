@@ -89,3 +89,7 @@ Run `npm run test:mh0002` for the five-photo gallery, byte integrity, classifica
 ## Clean product covers
 
 MH0001 and MH0002 use separate transparent PNG display covers, with the photographed backdrop, side artifacts and background fringe removed. `displaySrc` selects these covers consistently in listings, detail main images and thumbnails. All original JPEGs and their source-manifest checksums remain unchanged; gallery counts stay nine and five. Hover darkening is disabled for supplied photos to avoid introducing edge bands against the uniform product background.
+
+## Renamed styles
+
+The public style names are now Rio (formerly MH0001) and Nano (formerly MH0002). Canonical product and inquiry links use `product=Rio` and `product=Nano`; both old MH0001/MH0002 product links remain valid aliases. Original photo folders and manifests keep their archive identifiers for traceability. Images and gallery counts are unchanged.

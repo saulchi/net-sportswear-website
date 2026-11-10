@@ -1,9 +1,9 @@
 import { collections, photoKeys } from './catalog.js';
-import { uploadedProducts } from './inventory.js';
+import { findUploadedProduct } from './inventory.js';
 import { initProductGallery } from './detail-gallery.js';
 
 const params = new URLSearchParams(location.search);
-const product = uploadedProducts.find(item => item.style === params.get('product'));
+const product = findUploadedProduct(params.get('product'));
 const category = product?.category ?? (Object.hasOwn(collections, params.get('category')) ? params.get('category') : 'OUTDOOR');
 const gender = product?.gender ?? (params.get('gender') === 'Women' ? 'Women' : 'Men');
 const type = product?.subcategory ?? (Object.hasOwn(collections[category].types, params.get('subcategory')) ? params.get('subcategory') : Object.keys(collections[category].types)[0]);

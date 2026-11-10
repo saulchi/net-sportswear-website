@@ -1,10 +1,11 @@
 // One record represents one product style; every image belongs to its gallery.
 export const uploadedProducts = [{
-  style: 'MH0001',
+  style: 'Rio',
+  legacyStyle: 'MH0001',
   category: 'OUTDOOR',
   gender: 'Men',
   subcategory: 'Hardshell Jackets',
-  title: "MH0001 Men's Hooded Jacket",
+  title: "Rio Men's Hooded Jacket",
   description: 'A men’s hooded outdoor jacket, photographed in black, blue and grey colourways. Discuss your material, sizing and OEM / ODM requirements with us.',
   photos: [
     ['01.jpg','Black — front'],
@@ -18,11 +19,12 @@ export const uploadedProducts = [{
     ['09.jpg','Additional hem detail'],
   ].map(([file,label]) => ({src:`images/products/MH0001/${file}`,label,displaySrc:file === '01.jpg' ? 'images/products/MH0001/01-display.png' : undefined})),
 }, {
-  style: 'MH0002',
+  style: 'Nano',
+  legacyStyle: 'MH0002',
   category: 'OUTDOOR',
   gender: 'Men',
   subcategory: 'Hardshell Jackets',
-  title: "MH0002 Men's Hooded Jacket",
+  title: "Nano Men's Hooded Jacket",
   description: 'A men’s hooded outdoor jacket, shown in grey and black with front, back, hood detail and interior photographs. Discuss your material, sizing and OEM / ODM requirements with us.',
   photos: [
     ['01.jpg','Grey — front'],
@@ -32,3 +34,7 @@ export const uploadedProducts = [{
     ['05.jpg','Interior view'],
   ].map(([file,label]) => ({src:`images/products/MH0002/${file}`,label,displaySrc:file === '01.jpg' ? 'images/products/MH0002/01-display.png' : undefined})),
 }];
+
+export function findUploadedProduct(value) {
+  return uploadedProducts.find(product => product.style === value || product.legacyStyle === value);
+}
